@@ -12,7 +12,7 @@ export class Navbar extends Component {
       <div>
             <nav className="navbar navbar-expand-lg bg-body-tertiary">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">NewsMonkey</a>
+                <Link className="navbar-brand" to="/">NewsMonkey</Link>
              
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
@@ -26,25 +26,23 @@ export class Navbar extends Component {
                         <a className="nav-link active" href="/about">About</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link active" href="/about">business</a>
+                        <Link className="nav-link active" to="/business">Business</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link active" to="/entertainment">entertainment </Link>
+                        <Link className="nav-link active" to="/entertainment">Entertainment </Link>
+                    </li>
+                    
+                    <li className="nav-item">
+                        <Link className="nav-link active" to="/health">Health</Link>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link active" href="/about">general</a>
+                        <Link className="nav-link active" to="/science">Science</Link>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link active" href="/about">health</a>
+                        <Link className="nav-link active" to="/sports">Sports</Link>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link active" href="/about">science</a>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link active" to="/sports">sports</Link>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link active" href="/about">technology</a>
+                        <Link className="nav-link active" to="/technology">Technology</Link>
                     </li>
                     
                    
