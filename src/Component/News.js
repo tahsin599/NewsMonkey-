@@ -4,6 +4,7 @@ import Spinner from './Spinner';
 import PropTypes from 'prop-types'
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+
 export class News extends Component {
   capitalize = (word) => {
     return word.charAt(0).toUpperCase() + word.slice(1);
@@ -11,6 +12,7 @@ export class News extends Component {
 
   constructor(props) {
     super(props);
+    this.props.setProgress(10);
     this.state = {
       articles: [],
       page: 1,
@@ -36,11 +38,13 @@ export class News extends Component {
 
   }
   async updatenews() {
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=15e09deffa454dd19cb65a643ae384a6&page=${this.state.page + 1}&pagesize=${this.props.pageSize}`
+    //this.props.setProgress(0);
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page + 1}&pagesize=${this.props.pageSize}`
     this.setState({
       loading: true
     })
     let data = await fetch(url);
+    this.props.setProgress(30);
     let parsedData = await data.json();
     this.setState({
       articles: this.state.articles.concat(parsedData.articles)
@@ -50,6 +54,7 @@ export class News extends Component {
 
       results: parsedData.totalResults
     })
+    this.props.setProgress(100);
 
   }
   async componentDidMount() {
