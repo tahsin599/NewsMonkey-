@@ -1,100 +1,72 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import NewsItem from './NewsItem'
 import Spinner from './Spinner';
 import PropTypes from 'prop-types'
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 
-export class News extends Component {
-  capitalize = (word) => {
+const News = (props) => {
+  const capitalize = (word) => {
     return word.charAt(0).toUpperCase() + word.slice(1);
   }
-
-  constructor(props) {
-    super(props);
-    this.props.setProgress(10);
-    this.state = {
-      articles: [],
-      page: 1,
-      results: 0,
-      loading: false
-
-    }
-
-    document.title = this.capitalize(this.props.category) + '-' + "NewsMonkey"
-
-
-  }
-  static defaultProps = {
-    country: 'in',
-    pageSize: 5,
-    category: 'general'
-  }
-
-  static propTypes = {
-    country: PropTypes.string,
-    pageSize: PropTypes.number,
-    category: PropTypes.string
-
-  }
-  async updatenews() {
-    //this.props.setProgress(0);
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page + 1}&pagesize=${this.props.pageSize}`
-    this.setState({
-      loading: true
-    })
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState(0);
+  const [page, setPage] = useState(1);
+  // document.title = this.capitalize(this.props.category) + '-' + "NewsMonkey"
+  const updatenews = async () => {
+    props.setProgress(0);
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pagesize=${props.pageSize}`
+    
+    setLoading(true);
     let data = await fetch(url);
-    this.props.setProgress(30);
+    props.setProgress(30);
     let parsedData = await data.json();
-    this.setState({
-      articles: this.state.articles.concat(parsedData.articles)
-    })
-    this.setState({
-      loading: false,
+    
+    setArticles(articles.concat(parsedData.articles));
+    setLoading(false);
+    setResults(parsedData.totalResults);
+  
 
-      results: parsedData.totalResults
-    })
-    this.props.setProgress(100);
-
-  }
-  async componentDidMount() {
-    this.updatenews();
-  }
-  handlenextClick = async () => {
-    this.setState({
-      page: this.state.page + 1
-    })
-    this.updatenews();
+    props.setProgress(100);
 
   }
 
-  handleprevClick = async () => {
-    this.setState({
-      page: this.state.page - 1
-    })
-    this.updatenews();
+  useEffect(() => {
+    updatenews();
+  }, []);
+
+  
+  const handlenextClick = async () => {
+    setPage(page+1);
+      updatenews();
 
   }
-  fetchMoreData = async () => {
+
+  const handleprevClick = async () => {
+   setPage(page-1);
+    updatenews();
+
+  }
+  const fetchMoreData = async () => {
     // a fake async api call like which sends
     // 20 more records in 1.5 secs
-    this.setState({
-      page: this.state.page + 1
-    })
-    this.updatenews();
+   
+    setPage(page+1);
+    updatenews();
   };
 
-  render() {
+  
     return (
       <div className="container my-3">
         <h2 className=" text-center my-3">NewsMonkey-Top HeadLines</h2>
-        {this.state.loading && <Spinner/>}
+        {loading && <Spinner />}
         <InfiniteScroll
-          dataLength={this.state.articles.length}
-          next={this.fetchMoreData}
+          dataLength={articles.length}
+          next={fetchMoreData}
 
 
-          hasMore={this.state.articles.length !== this.state.results}
+          hasMore={articles.length !== results}
           loader={<h4>Loading...</h4>}
 
         >
@@ -102,7 +74,7 @@ export class News extends Component {
 
 
           <div className="row">
-            {this.state.articles.map((element) => {
+            {articles.map((element) => {
               return <div className="col-md-4" key={element.url}>
                 <NewsItem key={element.url} title={element.title ? element.title.slice(0, 45) : ""} imageUrl={element.urlToImage} description={element.description ? element.description.slice(0, 88) : ""} newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name} />
 
@@ -120,7 +92,20 @@ export class News extends Component {
       </div>
 
     )
-  }
+  
+}
+
+News.defaultProps = {
+  country: 'in',
+  pageSize: 5,
+  category: 'general'
+}
+
+News.propTypes = {
+  country: PropTypes.string,
+  pageSize: PropTypes.number,
+  category: PropTypes.string
+
 }
 
 export default News
